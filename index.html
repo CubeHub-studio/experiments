@@ -1,1 +1,27 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090713">
+<title>Experiments / Cubes Studio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{color-scheme:dark;--bg:#090713;--panel:#151124;--line:#302844;--muted:#a49bb8;--purple:#c4b5fd;--pink:#f0abfc}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#39205c,transparent 55%),var(--bg);color:#f7f2ff;font-family:'Space Grotesk',sans-serif}.wrap{max-width:900px;margin:auto;padding:55px 22px 80px}.top{font:10px 'DM Mono',monospace;letter-spacing:.16em;color:var(--pink)}h1{font-size:clamp(43px,9vw,76px);letter-spacing:-.07em;line-height:.95;margin:20px 0 12px}.gradient{background:linear-gradient(90deg,#c4b5fd,#f0abfc,#67e8f9);background-clip:text;color:transparent}.intro{color:var(--muted);line-height:1.7;max-width:560px}.launch{display:inline-block;margin:24px 0 44px;padding:13px 18px;border-radius:7px;background:linear-gradient(100deg,#7755cb,#a35bc0);color:white;text-decoration:none;font:11px 'DM Mono',monospace;letter-spacing:.08em}.panel{border:1px solid var(--line);background:#120f20d9;border-radius:14px;overflow:hidden}.panel-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.panel-head h2{font-size:18px;margin:0}.count{font:10px 'DM Mono',monospace;color:var(--purple)}#files{padding:8px 20px}.file{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:14px 4px;border-bottom:1px solid #ffffff10;text-decoration:none;color:#eee8ff}.file:last-child{border:0}.file:hover{color:var(--pink)}.path{font:12px 'DM Mono',monospace;overflow-wrap:anywhere}.kind{font:9px 'DM Mono',monospace;color:#817895;white-space:nowrap}.status{padding:18px 22px;color:var(--muted);font:10px 'DM Mono',monospace}footer{margin-top:28px;color:#776f89;font:9px 'DM Mono',monospace;letter-spacing:.1em;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style></head>
+<body><main class="wrap">
+<div class="top">CUBES STUDIO / PUBLIC EXPERIMENTS</div>
+<h1>THE <span class="gradient">EXPERIMENTS</span><br>FOLDER.</h1>
+<p class="intro">A directory of the weird little things living in this repository. This page automatically discovers every file inside <code>/stuff</code> and lists it below.</p>
+<a class="launch" href="./stuff/">OPEN CHAOSBOX ↗</a>
+<section class="panel"><div class="panel-head"><h2> /stuff — file index</h2><span class="count" id="count">SCANNING...</span></div><div id="files"></div><div class="status" id="status">CONTACTING THE REPOSITORY...</div></section>
+<footer><span>NOT EVERYTHING IS GUARANTEED TO WORK.</span><span>CUBES STUDIO © 2026</span></footer>
+</main>
+<script>
+const owner='CubeHub-studio',repo='experiments',branch='main';
+const list=document.getElementById('files'),status=document.getElementById('status'),count=document.getElementById('count');
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+fetch('https://api.github.com/repos/'+owner+'/'+repo+'/git/trees/'+branch+'?recursive=1')
+.then(r=>{if(!r.ok)throw Error('GitHub returned '+r.status);return r.json()})
+.then(data=>{if(data.truncated)status.textContent='GitHub returned a partial tree; showing the files it provided.';const files=(data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith('stuff/')).sort((a,b)=>a.path.localeCompare(b.path));count.textContent=files.length+' FILE'+(files.length===1?'':'S');if(!files.length){status.textContent='No files found inside /stuff yet.';return}list.innerHTML=files.map(f=>{const path=f.path.slice(6),ext=(path.split('.').pop()||'FILE').toUpperCase();return '<a class="file" href="./'+f.path.split('/').map(encodeURIComponent).join('/')+'"><span class="path">▤ '+esc(path)+'</span><span class="kind">'+esc(ext)+'</span></a>'}).join('');if(!data.truncated)status.textContent='LIVE DIRECTORY · '+files.length+' FILES DISCOVERED';})
+.catch(err=>{count.textContent='UNAVAILABLE';status.textContent='Could not load the file list: '+err.message+'. Try refreshing.'});
+</script></body></html>
