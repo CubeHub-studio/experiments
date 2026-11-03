@@ -2,12 +2,12 @@ const $=id=>document.getElementById(id);
 const examples={
 greet:{code:'name => "Hello, " + name + "! 👋"',args:'["world"]'},
 math:{code:'(a, b) => ({ sum: a + b, difference: a - b, product: a * b, quotient: b === 0 ? "Cannot divide by zero" : a / b })',args:'[12, 4]'},
-factorial:{code:'function factorial(n) {\\n  if (n < 0) throw new Error("Use a non-negative number");\\n  if (n <= 1) return 1;\\n  return n * factorial(n - 1);\\n}',args:'[6]'},
+factorial:{code:'function factorial(n) {\n  if (n < 0) throw new Error("Use a non-negative number");\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}',args:'[6]'},
 filter:{code:'(numbers, minimum = 0) => numbers.filter(number => number >= minimum)',args:'[[3, 8, 1, 12, 5, 20], 8]'},
-word:{code:'text => ({ words: text.trim() ? text.trim().split(/\\\\s+/).length : 0, characters: text.length, uppercase: text.toUpperCase() })',args:'["Functions are pretty cool"]'},
-fibonacci:{code:'(count) => {\\n  const sequence = [];\\n  for (let i = 0; i < count; i++) sequence.push(i < 2 ? i : sequence[i - 1] + sequence[i - 2]);\\n  return sequence;\\n}',args:'[12]'},
-async:{code:'async name => {\\n  await new Promise(resolve => setTimeout(resolve, 500));\\n  return "Finished waiting, " + name + "!";\\n}',args:'["experiment"]'},
-custom:{code:'value => {\\n  // Write your function here\\n  return value;\\n}',args:'["hello"]'}
+word:{code:'text => ({ words: text.trim() ? text.trim().split(/\\s+/).length : 0, characters: text.length, uppercase: text.toUpperCase() })',args:'["Functions are pretty cool"]'},
+fibonacci:{code:'(count) => {\n  const sequence = [];\n  for (let i = 0; i < count; i++) sequence.push(i < 2 ? i : sequence[i - 1] + sequence[i - 2]);\n  return sequence;\n}',args:'[12]'},
+async:{code:'async name => {\n  await new Promise(resolve => setTimeout(resolve, 500));\n  return "Finished waiting, " + name + "!";\n}',args:'["experiment"]'},
+custom:{code:'value => {\n  // Write your function here\n  return value;\n}',args:'["hello"]'}
 };
 let activeExample='greet',lastOutput='';
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2300)}
@@ -19,7 +19,7 @@ $('runFunction').addEventListener('click',async()=>{
  if(!code){out.textContent='Write a function first.';status.textContent='NO FUNCTION';return}
  let args;
  try{args=JSON.parse($('functionArgs').value);if(!Array.isArray(args))throw new Error('Arguments must be a JSON array, e.g. [1, 2].')}
- catch(error){out.textContent='ARGUMENT ERROR\\n'+error.message;status.textContent='INVALID ARGUMENTS';return}
+ catch(error){out.textContent='ARGUMENT ERROR\n'+error.message;status.textContent='INVALID ARGUMENTS';return}
  status.textContent='RUNNING...';out.textContent='Executing...';$('runFunction').disabled=true;
  try{
   const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
@@ -29,7 +29,7 @@ $('runFunction').addEventListener('click',async()=>{
   if(typeof value==='string')lastOutput=JSON.stringify(value);
   if(typeof value==='function')lastOutput='[Function '+(value.name||'anonymous')+']';
   out.textContent=lastOutput;status.textContent='✓ EXECUTED SUCCESSFULLY';
- }catch(error){lastOutput=error.name+': '+error.message;out.textContent='ERROR\\n'+lastOutput;status.textContent='✕ EXECUTION FAILED'}
+ }catch(error){lastOutput=error.name+': '+error.message;out.textContent='ERROR\n'+lastOutput;status.textContent='✕ EXECUTION FAILED'}
  finally{$('runFunction').disabled=false}
 });
 $('copyOutput').addEventListener('click',async()=>{if(!lastOutput){toast('RUN A FUNCTION FIRST.');return}try{await navigator.clipboard.writeText(lastOutput);toast('OUTPUT COPIED.')}catch{toast('CLIPBOARD ACCESS WAS BLOCKED.')}});
